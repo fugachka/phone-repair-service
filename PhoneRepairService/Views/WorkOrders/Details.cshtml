@@ -1,0 +1,57 @@
+@model WorkOrderViewModel
+@{
+    var o = Model.Order;
+    ViewData["Title"] = $"Заказ № {o.Id}";
+}
+<h1>Карточка заказа № @o.Id</h1>
+<table>
+    <tr><th>Дата приёма</th><td>@o.CreationDate.ToString("dd.MM.yyyy HH:mm")</td></tr>
+    <tr><th>Клиент</th><td>@o.Client.FullName, @o.Client.PhoneNumber</td></tr>
+    <tr><th>Модель</th><td>@o.PhoneModel.GetFullName()</td></tr>
+    <tr><th>IMEI</th><td>@o.Imei</td></tr>
+    <tr><th>Заявленные неисправности</th><td>@string.Join("; ", o.Faults.Select(f => f.GetFaultDetails()))</td></tr>
+    <tr><th>Предварительная стоимость</th><td>@Money.Format(o.TotalPrice)</td></tr>
+    <tr><th>Статус</th><td><strong>@o.Status.ToDisplayName()</strong></td></tr>
+    <tr><th>Дата изменения статуса</th><td>@(o.StatusChangedDate?.ToString("dd.MM.yyyy HH:mm:ss") ?? "не изменялся")</td></tr>
+    <tr><th>Мастер</th><td>@(o.Master?.FullName ?? "не назначен")</td></tr>
+    <tr><th>Диагноз</th><td>@(string.IsNullOrWhiteSpace(o.Diagnosis) ? "не указан" : o.Diagnosis)</td></tr>
+</table>
+
+<div asp-validation-summary="All" class="error"></div>
+
+<h2>Диагноз</h2>
+@if (o.Status == OrderStatus.InDiagnostics)
+{
+    <form asp-action="SaveDiagnosis" asp-route-id="@o.Id" method="post">
+        <label>Диагноз (причина неисправности, скрытые дефекты, детали для замены или заключение о неремонтопригодности)<br />
+            <textarea name="diagnosisText" required>@Model.DiagnosisText</textarea>
+        </label>
+        <p><button type="submit">Сохранить диагноз</button></p>
+    </form>
+}
+else
+{
+    <p>Диагноз указывается, когда заказ находится в статусе «На диагностике».</p>
+}
+
+<h2>Статус заказа</h2>
+@if (o.Status.IsFinal())
+{
+    <p>Статус «@o.Status.ToDisplayName()» конечный и не изменяется.</p>
+}
+else
+{
+    <form asp-action="SelectStatus" asp-route-id="@o.Id" method="post">
+        <label>Новое значение статуса<br />
+            <select name="newStatus" required>
+                <option value="">— выберите —</option>
+                @foreach (var s in Model.AllowedStatuses)
+                {
+                    <option value="@s">@s.ToDisplayName()</option>
+                }
+            </select>
+        </label>
+        <p><button type="submit">Изменить статус</button></p>
+    </form>
+}
+<p><a asp-action="Index">К общему списку заказов</a></p>

@@ -1,0 +1,27 @@
+@model List<Order>
+@{ ViewData["Title"] = "Заказы"; }
+<h1>Заказы</h1>
+<p><a asp-action="Create">Создать новый заказ</a></p>
+@if (Model.Count == 0)
+{
+    <p>Заказов пока нет.</p>
+}
+else
+{
+    <table>
+        <tr><th>№</th><th>Дата приёма</th><th>Клиент</th><th>Модель</th><th>IMEI</th><th>Стоимость</th><th>Статус</th><th></th></tr>
+        @foreach (var o in Model)
+        {
+            <tr>
+                <td>@o.Id</td>
+                <td>@o.CreationDate.ToString("dd.MM.yyyy HH:mm")</td>
+                <td>@o.Client.FullName</td>
+                <td>@o.PhoneModel.GetFullName()</td>
+                <td>@o.Imei</td>
+                <td>@Money.Format(o.TotalPrice)</td>
+                <td>@o.Status.ToDisplayName()</td>
+                <td><a asp-action="Receipt" asp-route-id="@o.Id">Квитанция</a></td>
+            </tr>
+        }
+    </table>
+}

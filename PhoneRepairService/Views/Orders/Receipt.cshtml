@@ -1,0 +1,10 @@
+@model Order
+@{ ViewData["Title"] = $"Квитанция № {Model.Id}"; }
+<h1 class="no-print">Квитанция о приёме устройства</h1>
+<pre class="receipt">@Model.PrintReceipt()</pre>
+<p class="no-print">
+    <button type="button" onclick="window.print()">Отправить на принтер</button>
+    <a asp-action="Create">Создать новый заказ</a> |
+    <a asp-action="Index">Список заказов</a>
+</p>
+<p class="no-print">Если принтер недоступен или нет бумаги, устраните неполадку и нажмите «Отправить на принтер» ещё раз.</p>

@@ -1,0 +1,11 @@
+@model FaultEditViewModel
+@{ ViewData["Title"] = Model.Id == 0 ? "Новая неисправность" : "Изменение неисправности"; }
+<h1>@ViewData["Title"]</h1>
+<form asp-action="Edit" method="post">
+    <div asp-validation-summary="All" class="error"></div>
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="ReturnUrl" />
+    <label>Наименование<br /><input type="text" asp-for="Title" required /></label>
+    <label>Базовая стоимость, руб.<br /><input type="text" asp-for="BasePrice" required /></label>
+    <p><button type="submit">Сохранить</button> <a asp-action="Index">Отмена</a></p>
+</form>

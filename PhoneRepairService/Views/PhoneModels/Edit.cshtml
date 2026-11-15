@@ -1,0 +1,19 @@
+@model PhoneModelEditViewModel
+@{ ViewData["Title"] = Model.Id == 0 ? "Новая модель телефона" : "Изменение модели телефона"; }
+<h1>@ViewData["Title"]</h1>
+<form asp-action="Edit" method="post">
+    <div asp-validation-summary="All" class="error"></div>
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="ReturnUrl" />
+    <label>Бренд<br /><input type="text" asp-for="Brand" required /></label>
+    <label>Название модели<br /><input type="text" asp-for="ModelName" required /></label>
+    @if (Model.Id != 0)
+    {
+        <label><input type="checkbox" asp-for="IsActive" /> Модель активна (снимите отметку, чтобы деактивировать)</label>
+    }
+    else
+    {
+        <input type="hidden" asp-for="IsActive" />
+    }
+    <p><button type="submit">Сохранить</button> <a asp-action="Index">Отмена</a></p>
+</form>

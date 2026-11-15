@@ -1,0 +1,29 @@
+@model ClientRegisterViewModel
+@{ ViewData["Title"] = "Регистрация клиента"; }
+<h1>Регистрация клиента</h1>
+@if (Model.ExistingClient != null)
+{
+    <div class="warning">
+        <p><strong>Клиент с таким номером уже зарегистрирован</strong></p>
+        <table>
+            <tr><th>ФИО</th><th>Телефон</th><th>E-mail</th><th>Логин</th><th></th></tr>
+            <tr>
+                <td>@Model.ExistingClient.FullName</td>
+                <td>@Model.ExistingClient.PhoneNumber</td>
+                <td>@Model.ExistingClient.Email</td>
+                <td>@Model.ExistingClient.Login</td>
+                <td><a asp-controller="Orders" asp-action="Create" asp-route-clientId="@Model.ExistingClient.Id">Выбрать этого клиента</a></td>
+            </tr>
+        </table>
+    </div>
+}
+<form asp-action="Register" method="post">
+    <div asp-validation-summary="All" class="error"></div>
+    <input type="hidden" asp-for="FromOrder" />
+    <label>ФИО<br /><input type="text" asp-for="FullName" required /></label>
+    <label>Номер телефона<br /><input type="text" asp-for="Phone" required placeholder="+7 900 123-45-67" /></label>
+    <label>Адрес электронной почты<br /><input type="text" asp-for="Email" required /></label>
+    <label>Логин владельца<br /><input type="text" asp-for="Login" required /></label>
+    <label>Пароль владельца (не менее 6 символов)<br /><input type="password" asp-for="Password" required minlength="6" /></label>
+    <p><button type="submit">Зарегистрировать</button></p>
+</form>

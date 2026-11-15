@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] — Сервис ремонта телефонов</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+<header class="no-print">
+    <strong>Сервис ремонта телефонов</strong>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <nav>
+            @if (User.IsInRole(Roles.Client))
+            {
+                <a asp-controller="MyOrders" asp-action="Index">Мои заказы</a>
+            }
+            @if (User.IsInRole(Roles.Master))
+            {
+                <a asp-controller="WorkOrders" asp-action="Index">Общий список заказов</a>
+            }
+            @if (User.IsInRole(Roles.Admin))
+            {
+                <a asp-controller="Orders" asp-action="Create">Создать новый заказ</a>
+                <a asp-controller="Orders" asp-action="Index">Заказы</a>
+                <a asp-controller="Clients" asp-action="Index">Клиенты</a>
+                <a asp-controller="Faults" asp-action="Index">Справочник неисправностей</a>
+                <a asp-controller="PhoneModels" asp-action="Index">Справочник моделей телефонов</a>
+            }
+        </nav>
+        <form class="user" asp-controller="Account" asp-action="Logout" method="post">
+            @User.Identity!.Name
+            (@(User.IsInRole(Roles.Admin) ? "Администратор" : User.IsInRole(Roles.Master) ? "Мастер" : "Владелец телефона"))
+            <button type="submit">Выйти</button>
+        </form>
+    }
+</header>
+<main>
+    @if (TempData["Message"] is string message)
+    {
+        <p class="message">@message</p>
+    }
+    @RenderBody()
+</main>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

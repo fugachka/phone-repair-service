@@ -1,0 +1,17 @@
+@model List<Client>
+@{ ViewData["Title"] = "Клиенты"; }
+<h1>Клиенты (владельцы телефонов)</h1>
+<p><a asp-action="Register">Зарегистрировать клиента</a></p>
+<table>
+    <tr><th>ФИО</th><th>Телефон</th><th>E-mail</th><th>Логин</th><th></th></tr>
+    @foreach (var c in Model)
+    {
+        <tr>
+            <td>@c.FullName</td>
+            <td>@c.PhoneNumber</td>
+            <td>@c.Email</td>
+            <td>@c.Login</td>
+            <td><a asp-controller="Orders" asp-action="Create" asp-route-clientId="@c.Id">Оформить заказ</a></td>
+        </tr>
+    }
+</table>

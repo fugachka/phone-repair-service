@@ -1,0 +1,76 @@
+@model OrderCreateViewModel
+@{ ViewData["Title"] = "Создать новый заказ"; }
+<h1>Оформление заказа на ремонт</h1>
+<form asp-action="Create" method="post" id="orderForm">
+    <div asp-validation-summary="All" class="error"></div>
+
+    <h2>1. Клиент</h2>
+    <label>Клиент<br />
+        <select name="ClientId" required>
+            <option value="">— выберите клиента —</option>
+            @foreach (var c in Model.Clients)
+            {
+                <option value="@c.Id" selected="@(Model.ClientId == c.Id)">@c.FullName, @c.PhoneNumber</option>
+            }
+        </select>
+    </label>
+    <p>Клиент обратился впервые? <a asp-controller="Clients" asp-action="Register" asp-route-fromOrder="true">Зарегистрировать клиента</a></p>
+
+    <h2>2. Модель телефона и неисправности</h2>
+    <label>Бренд и модель<br />
+        <select name="PhoneModelId" required>
+            <option value="">— выберите модель —</option>
+            @foreach (var brand in Model.PhoneModels.GroupBy(m => m.Brand))
+            {
+                <optgroup label="@brand.Key">
+                    @foreach (var m in brand)
+                    {
+                        <option value="@m.Id" selected="@(Model.PhoneModelId == m.Id)">@m.GetFullName()</option>
+                    }
+                </optgroup>
+            }
+        </select>
+    </label>
+    <p>Модели нет в справочнике?
+        <a asp-controller="PhoneModels" asp-action="Edit" asp-route-id="0" asp-route-returnUrl="@Url.Action("Create", "Orders", new { clientId = Model.ClientId })">Добавить модель</a></p>
+
+    <p>Заявленные неисправности (одна или несколько):</p>
+    <table>
+        <tr><th></th><th>Неисправность</th><th>Базовая стоимость</th></tr>
+        @foreach (var f in Model.Faults)
+        {
+            <tr>
+                <td><input type="checkbox" name="FaultIds" value="@f.Id" data-price="@f.BasePrice.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                           id="fault_@f.Id" checked="@Model.FaultIds.Contains(f.Id)" /></td>
+                <td><label for="fault_@f.Id" style="display:inline">@f.Title</label></td>
+                <td>@Money.Format(f.BasePrice)</td>
+            </tr>
+        }
+    </table>
+    <p>Предварительная стоимость (сумма базовых стоимостей выбранных неисправностей):
+        <strong id="total">@Money.Format(Model.SelectedTotal)</strong></p>
+    <p>Неисправности нет в справочнике?
+        <a asp-controller="Faults" asp-action="Edit" asp-route-id="0" asp-route-returnUrl="@Url.Action("Create", "Orders", new { clientId = Model.ClientId })">Добавить неисправность</a></p>
+
+    <h2>3. Устройство</h2>
+    <label>IMEI устройства (15 цифр)<br />
+        <input type="text" name="Imei" value="@Model.Imei" required pattern="\d{15}" maxlength="15" />
+    </label>
+
+    <p><button type="submit">Сохранить заказ</button></p>
+</form>
+
+@section Scripts {
+<script>
+    (function () {
+        var boxes = document.querySelectorAll('input[name="FaultIds"]');
+        var total = document.getElementById('total');
+        function recalc() {
+            var sum = 0;
+            boxes.forEach(function (b) { if (b.checked) sum += parseFloat(b.dataset.price); });
+            total.textContent = sum.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' руб.';
+        }
+        boxes.forEach(function (b) { b.addEventListener('change', recalc); });
+    })();
+</script>
+}

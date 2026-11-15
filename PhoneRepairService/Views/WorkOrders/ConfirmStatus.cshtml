@@ -1,0 +1,21 @@
+@model StatusConfirmViewModel
+@{
+    var o = Model.Order;
+    ViewData["Title"] = "Подтверждение изменения статуса";
+}
+<h1>Подтверждение изменения статуса</h1>
+<p>Заказ № @o.Id (@o.PhoneModel.GetFullName(), клиент @o.Client.FullName).</p>
+<p>Изменить статус «<strong>@o.Status.ToDisplayName()</strong>» на «<strong>@Model.NewStatus.ToDisplayName()</strong>»?</p>
+@if (Model.Step == 2)
+{
+    <p class="warning">Повторное подтверждение: статус «@Model.NewStatus.ToDisplayName()» конечный —
+        после сохранения изменить статус заказа будет нельзя. Подтвердите действие ещё раз.</p>
+}
+<form asp-action="ConfirmStatus" method="post">
+    <input type="hidden" name="id" value="@o.Id" />
+    <input type="hidden" name="newStatus" value="@Model.NewStatus" />
+    <input type="hidden" name="step" value="@Model.Step" />
+    <button type="submit" name="decision" value="confirm">Подтвердить</button>
+    <button type="submit" name="decision" value="cancel">Отменить</button>
+</form>
+<p><a asp-action="Details" asp-route-id="@o.Id">Выбрать другое значение статуса</a></p>

@@ -1,0 +1,17 @@
+body { font-family: Arial, sans-serif; font-size: 15px; margin: 0; }
+header { background: #eee; padding: 8px 16px; border-bottom: 1px solid #ccc; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; }
+header nav a { margin-right: 12px; }
+header form.user { margin-left: auto; }
+main { padding: 12px 16px; }
+table { border-collapse: collapse; margin: 8px 0; }
+th, td { border: 1px solid #999; padding: 4px 8px; text-align: left; vertical-align: top; }
+label { display: block; margin-top: 8px; }
+input[type=text], input[type=password], select, textarea { width: 360px; max-width: 100%; }
+textarea { height: 100px; }
+.message { background: #e6f4e6; border: 1px solid #8c8; padding: 6px; }
+.warning { background: #fff4e0; border: 1px solid #e0a040; padding: 6px; }
+.validation-summary-errors, .field-validation-error, .error { color: #c00; }
+.input-validation-error, input:user-invalid, select:user-invalid { border: 2px solid #c00; }
+.inactive { color: #888; }
+pre.receipt { border: 1px solid #000; padding: 12px; font-family: "Courier New", monospace; white-space: pre-wrap; max-width: 760px; }
+@media print { .no-print { display: none; } main { padding: 0; } pre.receipt { border: none; } }

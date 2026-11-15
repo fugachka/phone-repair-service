@@ -1,0 +1,13 @@
+@model Order
+@{ ViewData["Title"] = $"Заказ № {Model.Id}"; }
+<h1>Заказ № @Model.Id</h1>
+<table>
+    <tr><th>Дата приёма</th><td>@Model.CreationDate.ToString("dd.MM.yyyy HH:mm")</td></tr>
+    <tr><th>Модель</th><td>@Model.PhoneModel.GetFullName()</td></tr>
+    <tr><th>IMEI</th><td>@Model.Imei</td></tr>
+    <tr><th>Заявленные неисправности</th><td>@string.Join(", ", Model.Faults.Select(f => f.Title))</td></tr>
+    <tr><th>Статус</th><td>@Model.Status.ToDisplayName()</td></tr>
+    <tr><th>Диагноз</th><td>@(string.IsNullOrWhiteSpace(Model.Diagnosis) ? "не указан" : Model.Diagnosis)</td></tr>
+    <tr><th>Предварительная стоимость</th><td>@Money.Format(Model.TotalPrice)</td></tr>
+</table>
+<p><a asp-action="Index">К списку заказов</a></p>
